@@ -1,0 +1,5 @@
+# Replace example.com with your domain. DNS must point to the server's IP.
+example.com {
+    encode gzip
+    reverse_proxy south:8000
+}
