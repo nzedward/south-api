@@ -107,7 +107,6 @@ HTML_TEMPLATE = '''
         </div>
         
         <div id="resultArea"></div>
-        <div id="termTable"></div>
     </div>
     
     <script>
@@ -176,12 +175,14 @@ HTML_TEMPLATE = '''
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('successMsg').classList.remove('hidden');
                     document.getElementById('convertBtn').disabled = false;
-                    renderTermTable(year, data.terms, data.source);
+                    // 不再显示节气表格，只提示加载成功
                 } else {
                     alert('查询失败：' + data.error);
+                    document.getElementById('loading').classList.add('hidden');
                 }
             } catch (error) {
                 alert('查询失败：' + error.message);
+                document.getElementById('loading').classList.add('hidden');
             }
         }
         
@@ -239,6 +240,8 @@ HTML_TEMPLATE = '''
             const result = await response.json();
             
             if (result.success) {
+                // 隐藏输入表单，显示结果页面
+                document.querySelector('.bg-white.rounded-lg.shadow-lg.p-6.mb-6').style.display = 'none';
                 renderResult(result.data);
             } else {
                 alert('转换失败：' + result.error);
@@ -329,15 +332,30 @@ HTML_TEMPLATE = '''
                             ${data.input_hemisphere.includes('南') ? `${data.input_datetime} → ${data.output_datetime}` : `确认使用 ${data.input_datetime}`}
                         </p>
                     </div>
-                    <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <div class="bg-green-50 rounded-lg p-4 border border-green-200 mb-4">
                         <p class="text-sm text-green-800">
                             <strong>✓ 八字排盘使用：</strong>
                             <span class="font-bold text-green-900 text-lg ml-2">${data.output_date} ${data.output_time}</span>
                         </p>
                     </div>
+                    <div class="text-center">
+                        <button onclick="resetForm()" class="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg">
+                            重新查询
+                        </button>
+                    </div>
                 </div>
             `;
             document.getElementById('resultArea').innerHTML = html;
+        }
+        
+        function resetForm() {
+            // 显示输入表单
+            document.querySelector('.bg-white.rounded-lg.shadow-lg.p-6.mb-6').style.display = 'block';
+            // 清空结果区域
+            document.getElementById('resultArea').innerHTML = '';
+            // 重置表单状态
+            document.getElementById('convertBtn').disabled = true;
+            document.getElementById('successMsg').classList.add('hidden');
         }
     </script>
 </body>
