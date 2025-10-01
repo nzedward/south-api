@@ -1,5 +1,5 @@
 """
-安德堂 八字排盘日期转换器 - Python Flask版本
+宏德堂 八字排盘日期转换器 - Python Flask版本
 可以在线获取精确的节气数据
 
 安装依赖：
@@ -25,34 +25,13 @@ HTML_TEMPLATE = '''
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>安德堂 八字排盘日期转换器</title>
+    <title>宏德堂 八字排盘日期转换器</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 flatpickr 移动端日期选择器 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
-    
-    <style>
-        /* 移动端优化样式 */
-        .flatpickr-calendar {
-            font-size: 16px !important;
-        }
-        .flatpickr-day {
-            height: 44px !important;
-            line-height: 44px !important;
-            max-width: 44px !important;
-        }
-        /* 防止 iOS 放大输入框 */
-        input[type="text"], input[type="number"], select {
-            font-size: 16px !important;
-        }
-    </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen p-4">
     <div class="max-w-4xl mx-auto">
         <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h1 class="text-3xl font-bold text-center text-indigo-900 mb-2">安德堂 八字排盘日期转换器</h1>
+            <h1 class="text-3xl font-bold text-center text-indigo-900 mb-2">宏德堂 八字排盘日期转换器</h1>
             <p class="text-center text-gray-600 text-sm mb-6">南半球出生者需转换为北半球对应日期时间进行排盘</p>
             
             <div class="space-y-4">
@@ -68,8 +47,7 @@ HTML_TEMPLATE = '''
                     <label class="text-gray-700 font-medium mb-2 block">出生年份</label>
                     <div class="flex gap-2">
                         <input type="number" id="year" value="2008" min="1900" max="2100" 
-                               class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg text-lg"
-                               onchange="updateYearRange()">
+                               class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg text-lg">
                         <button onclick="fetchSolarTerms()" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg">
                             查询节气
                         </button>
@@ -87,15 +65,13 @@ HTML_TEMPLATE = '''
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="text-gray-700 font-medium mb-2 block">出生日期</label>
-                        <input type="text" id="inputDate" placeholder="选择日期"
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-lg"
-                               readonly>
+                        <input type="date" id="inputDate" 
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-lg">
                     </div>
                     <div>
                         <label class="text-gray-700 font-medium mb-2 block">出生时间</label>
-                        <input type="text" id="inputTime" placeholder="选择时间"
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-lg"
-                               readonly>
+                        <input type="time" id="inputTime" value="12:00"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-lg">
                     </div>
                 </div>
                 
@@ -112,55 +88,6 @@ HTML_TEMPLATE = '''
     
     <script>
         let solarTermsData = null;
-        let datePicker = null;
-        let timePicker = null;
-        
-        // 页面加载时初始化
-        window.addEventListener('DOMContentLoaded', function() {
-            const year = document.getElementById('year').value;
-            
-            // 初始化日期选择器（移动端友好的滚轮式）
-            datePicker = flatpickr("#inputDate", {
-                locale: "zh",
-                dateFormat: "Y-m-d",
-                defaultDate: `${year}-01-01`,
-                allowInput: false,
-                disableMobile: false,
-                minDate: `${year}-01-01`,
-                maxDate: `${year}-12-31`,
-                onChange: function(selectedDates, dateStr) {
-                    console.log("选择的日期:", dateStr);
-                }
-            });
-            
-            // 初始化时间选择器
-            timePicker = flatpickr("#inputTime", {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true,
-                defaultDate: "12:00",
-                allowInput: false,
-                disableMobile: false,
-                minuteIncrement: 1
-            });
-        });
-        
-        // 更新年份范围的函数
-        function updateYearRange() {
-            const year = document.getElementById('year').value;
-            const minDate = `${year}-01-01`;
-            const maxDate = `${year}-12-31`;
-            
-            // 更新日期选择器的年份范围
-            if (datePicker) {
-                datePicker.set('minDate', minDate);
-                datePicker.set('maxDate', maxDate);
-                datePicker.setDate(`${year}-01-01`);
-            }
-            
-            console.log(`年份已更新为: ${year}`);
-        }
         
         async function fetchSolarTerms() {
             const year = document.getElementById('year').value;
@@ -251,7 +178,7 @@ HTML_TEMPLATE = '''
                     <h2 class="text-2xl font-bold text-center text-indigo-900 mb-6">转换结果</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                         <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-5 border-2 border-orange-200">
-                            <div class="text-sm text-orange-700 font-medium mb-3">🌍 ${data.input_hemisphere}</div>
+                            <div class="text-sm text-orange-700 font-medium mb-3">🌏 ${data.input_hemisphere}</div>
                             <div class="text-2xl font-bold text-orange-900 mb-3">${data.input_datetime}</div>
                             <div class="space-y-1 text-sm text-orange-800">
                                 <div>所处节气：<span class="font-bold">${data.current_term}</span></div>
@@ -259,7 +186,7 @@ HTML_TEMPLATE = '''
                             </div>
                         </div>
                         <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-5 border-2 border-blue-200">
-                            <div class="text-sm text-blue-700 font-medium mb-3">🌏 转换后（用于排盘）</div>
+                            <div class="text-sm text-blue-700 font-medium mb-3">🌍 转换后（用于排盘）</div>
                             <div class="text-2xl font-bold text-blue-900 mb-3">${data.output_datetime}</div>
                         </div>
                     </div>`;
@@ -533,7 +460,7 @@ def fetch_online_solar_terms(year):
         return None
 
 def calculate_local_solar_terms(year):
-    """本地计算节气（备用方案）"""
+    """本地计算节气（后备方案）"""
     # 使用简化的天文算法
     terms = []
     base_dates = [
@@ -561,7 +488,7 @@ def calculate_local_solar_terms(year):
 
 if __name__ == '__main__':
     print("=" * 50)
-    print("安德堂 八字排盘日期转换器")
+    print("宏德堂 八字排盘日期转换器")
     print("=" * 50)
     print("服务启动中...")
     print("访问地址：http://localhost:5001")
